@@ -15,6 +15,7 @@ bool deviceConnected = false; // Is the device connected
 // https://www.uuidgenerator.net/
 #define SERVICE_UUID        "3f1e2b44-f0fa-420a-8630-dfb2e2ebda8e"
 #define CHARACTERISTIC_UUID "2315f48e-a7e5-42d1-b3fa-36fad4994d81"
+#define DEVICE_NAME         "OmnicubePlayer1"
 
 // Button Pins
 #define DPAD_UP_PIN D10
@@ -41,7 +42,6 @@ class MyServerCallbacks : public BLEServerCallbacks {
   }
 };
 
-
 void setup() {
   Serial.begin(115200);
   Serial.println("Starting BLE work!");
@@ -55,7 +55,7 @@ void setup() {
   pinMode(BUTTON_B_PIN, INPUT_PULLUP);
 
   // BLE Setup
-  BLEDevice::init("OmnicubePlayer1");
+  BLEDevice::init(DEVICE_NAME);
 
   // Create the BLE Server
   pServer = BLEDevice::createServer();
@@ -75,8 +75,7 @@ void setup() {
 
   pService->start();
 
-  // Advertising setup
-  // Start advertising
+  // Advertising setup, Start advertising
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true); // Changed to true to help discovery
@@ -85,7 +84,6 @@ void setup() {
   BLEDevice::startAdvertising();
   Serial.println("Waiting a client connection to notify...");
 }
-
 
 void loop() {
   bool inputs_changed = false; // Has inputs changed?
