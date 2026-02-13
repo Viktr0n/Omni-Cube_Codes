@@ -264,7 +264,6 @@ async def run():
 
     print("Both Bluetooth managers initialized. Entering display loop...")
 
-    # Use spaces consistently here:
     while isWaiting or isPlaying:
         display.fill(BLACK)
         while isWaiting:
