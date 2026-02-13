@@ -89,7 +89,7 @@ void loop() {
   bool inputs_changed = false; // Has inputs changed?
   int data_to_send = 0;
 
-  // Read Sensors
+  // Read Sensors. Inverted because of buttons being active low
   controllerInputsCurrent[0] = !digitalRead(DPAD_UP_PIN);
   controllerInputsCurrent[1] = !digitalRead(DPAD_RIGHT_PIN);
   controllerInputsCurrent[2] = !digitalRead(DPAD_DOWN_PIN);
