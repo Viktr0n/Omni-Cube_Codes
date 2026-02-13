@@ -150,8 +150,7 @@ async def run():
         handle_player(PLR1_NAME, PLR1_CHARACTERISTIC_UUID, notification_handler_plr1)
     )
 
-    # 2. WAIT before starting Player 2
-    # This gives Player 1 time to finish scanning/connecting
+    # Give Player 1 time to finish scanning/connecting
     print("Waiting for Player 1 to initialize...")
     await asyncio.sleep(2.0)
 
