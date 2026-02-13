@@ -191,7 +191,6 @@ async def run():
 # --- Execution ---
 if __name__ == "__main__":
     try:
-        # This is required to run asynchronous functions
         asyncio.run(run())
     except KeyboardInterrupt:
         print("\nClient stopped by user.")
