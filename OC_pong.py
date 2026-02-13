@@ -268,7 +268,6 @@ async def run():
         display.fill(BLACK)
         while isWaiting:
             pause()
-            await asyncio.sleep(0.1)
             if(player1_input[4] and player2_input[4]):
                 isWaiting = False
                 isPlaying = False
@@ -289,7 +288,7 @@ async def run():
             if not (client1 and client1.is_connected) or not (client2 and client2.is_connected): # If a controller disconnects, pause the game
                 isWaiting = True
                 isPlaying = False
-            await asyncio.sleep(0.001)
+        await asyncio.sleep(0.001)
 
 # --- Execution ---
 if __name__ == "__main__":
