@@ -25,6 +25,11 @@ bool deviceConnected = false; // Is the device connected
 #define BUTTON_B_PIN D5 
 #define BUTTON_A_PIN D6
 
+unsigned long inactiveMillis; // Milliseconds since last input
+unsigned long offMillis; // Millis since last pressing A + B
+#define INACTIVE_POWER_OFF 120 // Ammount of seconds of inactivity to power off
+#define ACTIVE_POWER_OFF 2.5 // Ammount of seconds of pushing A + B to power off
+
 // Controller inputs
 bool controllerInputsCurrent[6] = {}; // 0 - up, 1 - right, 2 - down, 3 - left, 4 - b, 5 - a
 bool controllerInputsOld[6] = {0, 0, 0, 0, 0, 0}; // Used to check for changed inputs
@@ -38,13 +43,16 @@ class MyServerCallbacks : public BLEServerCallbacks {
   void onDisconnect(BLEServer *pServer) { // If controller disconnects, update connection variable and start advertising
       deviceConnected = false;
       BLEDevice::startAdvertising(); 
-      Serial.println("Device disconnected. Restarted advertising...");
   }
 };
 
+void ESPSleep(){
+  Serial.flush(); // Clear serial
+  esp_deep_sleep_start(); // Start sleeping
+}
+
 void setup() {
-  Serial.begin(115200);
-  Serial.println("Starting BLE work!");
+  setCpuFrequencyMhz(80); // Set to 80MHz immediately to save power
 
   // Pin Initialization
   pinMode(DPAD_UP_PIN, INPUT_PULLUP);
@@ -53,7 +61,7 @@ void setup() {
   pinMode(DPAD_LEFT_PIN, INPUT_PULLUP);
   pinMode(BUTTON_A_PIN, INPUT_PULLUP);
   pinMode(BUTTON_B_PIN, INPUT_PULLUP);
-
+  
   // BLE Setup
   BLEDevice::init(DEVICE_NAME);
 
@@ -82,7 +90,6 @@ void setup() {
   pAdvertising->setMinPreferred(0x06);  
   pAdvertising->setMaxPreferred(0x12);
   BLEDevice::startAdvertising();
-  Serial.println("Waiting a client connection to notify...");
 }
 
 void loop() {
@@ -97,6 +104,10 @@ void loop() {
   controllerInputsCurrent[4] = !digitalRead(BUTTON_B_PIN);
   controllerInputsCurrent[5] = !digitalRead(BUTTON_A_PIN);
 
+  if(!controllerInputsCurrent[4] + !controllerInputsCurrent[5]){ // If A + B is not pressed, update offMillis
+    offMillis = millis();
+  }
+
   for(int i = 0; i <= 5; i++){ // Check for Changes
     if(controllerInputsCurrent[i] != controllerInputsOld[i]){
       inputs_changed = true;
@@ -105,15 +116,16 @@ void loop() {
   }
 
   if (inputs_changed) { // Send data if inputs changed
+    inactiveMillis = millis(); // Update time since last input
     for(int i = 0; i <= 5; i++){ // Format the data into an int (eg 010011 would be up + right + b)
       data_to_send += controllerInputsCurrent[i] * pow(10, i);
-      Serial.print("Input nr ");  Serial.print(i);  Serial.print(" is :");  Serial.println(controllerInputsCurrent[i]); // Prints output to serial monitor
     }
     if (deviceConnected) {//Sends data
       pCharacteristic->setValue((uint8_t *)&data_to_send, 4);
       pCharacteristic->notify();
-      Serial.print("Sent update: ");
-      Serial.println(data_to_send);
     }
+  }
+  if(millis()-offMillis > ACTIVE_POWER_OFF * 1000 || millis()-inactiveMillis > INACTIVE_POWER_OFF * 1000){
+    ESPSleep();
   }
 }
