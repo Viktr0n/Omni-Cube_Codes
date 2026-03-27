@@ -4,6 +4,7 @@
 #include <BLE2902.h>
 #include <BLE2901.h>
 #include <cmath>
+#include "driver/rtc_io.h"
 
 BLEServer *pServer = NULL;
 BLECharacteristic *pCharacteristic = NULL;
@@ -13,26 +14,26 @@ bool deviceConnected = false; // Is the device connected
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
-#define SERVICE_UUID        "26478d74-e7d2-48f9-8b20-c10f0fdd20d6"
-#define CHARACTERISTIC_UUID "2c8a15df-2c93-4a4b-bb1e-392a74e44864"
-#define DEVICE_NAME         "OmnicubePlayer2"
+#define SERVICE_UUID        "3f1e2b44-f0fa-420a-8630-dfb2e2ebda8e"
+#define CHARACTERISTIC_UUID "2315f48e-a7e5-42d1-b3fa-36fad4994d81"
+#define DEVICE_NAME         "OmnicubePlayer1"
 
 // Button Pins
 #define DPAD_UP_PIN D10
 #define DPAD_RIGHT_PIN D7
 #define DPAD_DOWN_PIN D8
 #define DPAD_LEFT_PIN D9
-#define BUTTON_B_PIN D6
-#define BUTTON_A_PIN D5
-
-// Controller inputs
-bool controllerInputsCurrent[6] = {}; // 0 - up, 1 - right, 2 - down, 3 - left, 4 - b, 5 - a
-bool controllerInputsOld[6] = {0, 0, 0, 0, 0, 0}; // Used to check for changed inputs
+#define BUTTON_B_PIN D5 
+#define BUTTON_A_PIN D6
 
 unsigned long inactiveMillis; // Milliseconds since last input
 unsigned long offMillis; // Millis since last pressing A + B
 #define INACTIVE_POWER_OFF 120 // Ammount of seconds of inactivity to power off
 #define ACTIVE_POWER_OFF 2.5 // Ammount of seconds of pushing A + B to power off
+
+// Controller inputs
+bool controllerInputsCurrent[6] = {}; // 0 - up, 1 - right, 2 - down, 3 - left, 4 - b, 5 - a
+bool controllerInputsOld[6] = {0, 0, 0, 0, 0, 0}; // Used to check for changed inputs
 
 class MyServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer *pServer) { // When connects to RPi, update connection variable
@@ -46,8 +47,13 @@ class MyServerCallbacks : public BLEServerCallbacks {
 };
 
 void ESPSleep(){
-  Serial.flush(); // Clear serial
-  esp_deep_sleep_start(); // Start sleeping
+  // Enable external wakeup from up button
+  esp_sleep_enable_ext0_wakeup((gpio_num_t)DPAD_UP_PIN, 0);
+  rtc_gpio_pullup_en((gpio_num_t)DPAD_UP_PIN);
+  rtc_gpio_pulldown_dis((gpio_num_t)DPAD_UP_PIN); 
+
+  Serial.flush(); 
+  esp_deep_sleep_start(); 
 }
 
 void setup() {
