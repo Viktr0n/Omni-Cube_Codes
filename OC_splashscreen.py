@@ -78,4 +78,4 @@ display.txt_write("Oscar Bodenäs")
 display.txt_set_cursor(560, 90)
 display.txt_write("Victor Ekberg")
 
-subprocess.run(["python", "mainMenue.py"]) # starts main menue
+subprocess.run(["python", "mainMenu.py"]) # starts main menue
