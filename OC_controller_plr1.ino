@@ -23,8 +23,8 @@ bool deviceConnected = false; // Is the device connected
 #define DPAD_RIGHT_PIN D7
 #define DPAD_DOWN_PIN D8
 #define DPAD_LEFT_PIN D9
-#define BUTTON_B_PIN D5 
-#define BUTTON_A_PIN D6
+#define BUTTON_B_PIN D6
+#define BUTTON_A_PIN D5
 
 unsigned long inactiveMillis; // Milliseconds since last input
 unsigned long offMillis; // Millis since last pressing A + B
@@ -130,7 +130,7 @@ void loop() {
       pCharacteristic->notify();
     }
   }
-  
+
   if(millis()-offMillis > ACTIVE_POWER_OFF * 1000 || millis()-inactiveMillis > INACTIVE_POWER_OFF * 1000){
     ESPSleep();
   }
