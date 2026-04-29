@@ -33,37 +33,7 @@ https://github.com/Kingfisk/Omni-Cube_3DModels
 
 ## Getting Started
 
-### Startup Instructions
-1. Ensure controller batteries are charged
-2. Plug in the Raspberry Pi with Micro-USB cable (2.5A)
-3. Connect external power supply (12V, 6A barrel plug)
-4. Wait approximately 1 minute for startup - motor and display will initialize automatically
-
-### Controller Pairing
-- Wake controllers by pressing up on the D-pad
-- Controllers automatically connect to the Raspberry Pi
-
-### Main Menu Navigation
-- Press up/down on D-pad to navigate menu options
-- Press A button to select an option
-- Current working options: Pong game and Power Off
-
-### Pong Game Controls
-- **Black Controller** (Player 1): Controls top paddle
-- **White Controller** (Player 2): Controls bottom paddle
-- Press left/right on D-pad to move your paddle
-- Press A button (both players simultaneously) to start the game
-- Press B button (both players) to return to main menu
-- Game pauses automatically if a controller disconnects
-
-### Controller Management
-- Press and hold A + B buttons for 2.5 seconds to force deep sleep/restart
-- Controllers enter deep sleep after 2 minutes of inactivity
-- Press D-pad up to wake controllers from deep sleep
-
-## Adding More Games
-
-The Omni-Cube supports extensible game development. See the User_manual file for detailed step-by-step instructions on how to add new games to the system.
+The User_manual describes how to start the project, how to maneuver the main menu and the controlls for the Pong game. If you want to add more of your own games to the project, step-by-step instructions are also included in the User_manual
 
 ## Authors
 
